@@ -1,0 +1,14 @@
+@import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap");
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+
+* {
+  box-sizing: border-box;
+  font-family: Lato, Segoe UI, Roboto, San francisco, "sans-serif";
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  height: 100%;
+}

@@ -1,0 +1,9 @@
+version: "3.6"
+services:
+  app:
+    container_name: gobots-chat
+    image: gobots-chat
+    build:
+      context: .
+    ports:
+      - 8080:80

@@ -1,5 +1,5 @@
 import React from "react";
-import { Message } from "./types";
+import { Message } from "../../types";
 import { Box, Button, TextField, Typography } from "@mui/material";
 
 function Welcome() {
@@ -20,8 +20,7 @@ function Welcome() {
 
   return (
     <Box
-      width="100%"
-      height="100%"
+      height="100vh"
       display="flex"
       alignItems="center"
       flexDirection="column"

@@ -1,7 +1,7 @@
 import { FormEvent, KeyboardEvent, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
-import { Message } from "./types";
+import { Message } from "../../types";
 import { Box, Button, TextField, Typography } from "@mui/material";
 
 const ChatApp = () => {

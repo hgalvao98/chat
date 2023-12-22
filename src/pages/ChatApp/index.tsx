@@ -1,11 +1,13 @@
 import { FormEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { Message } from "../../types";
-import { Box, Button, TextField, Typography } from "@mui/material";
+import { Box, Button, IconButton, TextField, Typography } from "@mui/material";
+import { ArrowBack, Delete, Remove } from "@mui/icons-material";
 
 const ChatApp = () => {
   const params = useParams();
+  const navigate = useNavigate();
 
   const userId = params.name;
   const [messagesFromServer, setMessagesFromServer] = useState<Message[]>([]);
@@ -115,7 +117,7 @@ const ChatApp = () => {
       height="100vh"
       display="flex"
       flexDirection="column"
-      gap={3}
+      gap={2}
       p={4}
       overflow="auto"
       position="relative"
@@ -124,7 +126,42 @@ const ChatApp = () => {
       bgcolor="#f5f7f8"
       padding={2}
     >
-      <Box width="100%" overflow="auto" id="chat-container">
+      <Box
+        display="flex"
+        padding={2}
+        justifyContent="space-between"
+        width="100%"
+      >
+        <IconButton
+          onClick={() => {
+            navigate(-1);
+          }}
+        >
+          <ArrowBack color="primary" />
+        </IconButton>
+        <Typography variant="h4">Chat</Typography>
+        <Button
+          variant="outlined"
+          onClick={() => {
+            localStorage.removeItem("chatMessages");
+            setMessagesFromServer([]);
+          }}
+        >
+          Limpar
+          <Delete />
+        </Button>
+      </Box>
+      <Box
+        height="80%"
+        border="1px solid"
+        borderColor="gray"
+        borderRadius={2}
+        width="100%"
+        overflow="auto"
+        bgcolor="white"
+        id="chat-container"
+        p={2}
+      >
         {messagesFromServer.map((message) => (
           <Box
             display="flex"

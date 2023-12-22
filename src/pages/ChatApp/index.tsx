@@ -1,4 +1,4 @@
-import { FormEvent, KeyboardEvent, useEffect, useState } from "react";
+import { FormEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { Message } from "../../types";
@@ -11,6 +11,14 @@ const ChatApp = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [messagesFromServer, setMessagesFromServer] = useState<Message[]>([]);
   const [inputText, setInputText] = useState("");
+
+  const handleStorage = (e: StorageEvent) => {
+    if (e.key === "chatMessages") {
+      setMessagesFromServer(JSON.parse(e.newValue as string));
+    }
+  };
+
+  const prevLengthRef = useRef(messagesFromServer.length);
 
   useEffect(() => {
     const storedMessages = localStorage.getItem("chatMessages");
@@ -31,12 +39,6 @@ const ChatApp = () => {
   }, [messages]);
 
   useEffect(() => {
-    const handleStorage = (e: StorageEvent) => {
-      if (e.key === "chatMessages") {
-        setMessagesFromServer(JSON.parse(e.newValue as string));
-      }
-    };
-
     window.addEventListener("storage", handleStorage);
 
     return () => {
@@ -56,7 +58,7 @@ const ChatApp = () => {
         newMessages.sort(
           (a: { creationDate: string }, b: { creationDate: any }) =>
             a.creationDate.localeCompare(b.creationDate)
-        ); // Sort messages by date
+        );
         setMessagesFromServer(newMessages);
       }
     };
@@ -99,6 +101,21 @@ const ChatApp = () => {
     setInputText("");
   };
 
+  useEffect(() => {
+    if (messagesFromServer.length > prevLengthRef.current) {
+      scrollToBottom();
+    }
+
+    prevLengthRef.current = messagesFromServer.length;
+  }, [messagesFromServer]);
+
+  const scrollToBottom = () => {
+    const chatContainer = document.getElementById("chat-container");
+    if (chatContainer) {
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+  };
+
   return (
     <Box
       height="100vh"
@@ -113,7 +130,7 @@ const ChatApp = () => {
       bgcolor="#f5f7f8"
       padding={2}
     >
-      <Box width="100%">
+      <Box width="100%" overflow="auto" id="chat-container">
         {messagesFromServer.map((message) => (
           <Box
             display="flex"
@@ -156,7 +173,12 @@ const ChatApp = () => {
             }
           }}
         />
-        <Button variant="contained" type="submit" sx={{ height: "79px" }}>
+        <Button
+          disabled={inputText === ""}
+          variant="contained"
+          type="submit"
+          sx={{ height: "79px" }}
+        >
           Enviar
         </Button>
       </Box>

@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { Message } from "../../types";
 import { Box, Button, TextField, Typography } from "@mui/material";
 
 function Welcome() {
-  const [name, setName] = React.useState("");
+  const [name, setName] = useState("");
 
   const handleJoinChat = () => {
     const storedMessages = localStorage.getItem("chatMessages");
@@ -14,7 +14,7 @@ function Welcome() {
     if (name && !nameInUse) {
       window.location.href = `/chat/${name}`;
     } else {
-      alert("Name already in use");
+      alert("Nome de usuário já em uso");
     }
   };
 

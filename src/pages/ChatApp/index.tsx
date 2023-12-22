@@ -3,7 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { Message } from "../../types";
 import { Box, Button, IconButton, TextField, Typography } from "@mui/material";
-import { ArrowBack, Delete, Remove } from "@mui/icons-material";
+import { ArrowBack, Delete } from "@mui/icons-material";
+import EmojisDrawer from "../../components/EmojisDrawer";
 
 const ChatApp = () => {
   const params = useParams();
@@ -12,6 +13,7 @@ const ChatApp = () => {
   const userId = params.name;
   const [messagesFromServer, setMessagesFromServer] = useState<Message[]>([]);
   const [inputText, setInputText] = useState("");
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   const handleStorage = (e: StorageEvent) => {
     if (e.key === "chatMessages") {
@@ -189,21 +191,25 @@ const ChatApp = () => {
         display="flex"
         gap={2}
       >
-        <TextField
-          fullWidth
-          multiline
-          minRows={2}
-          maxRows={2}
-          type="text"
-          value={inputText}
-          onChange={handleInputChange}
-          onKeyDown={(e: KeyboardEvent) => {
-            if (e.key === "Enter" && !e.shiftKey) {
-              e.preventDefault();
-              handleFormSubmit(e as unknown as FormEvent<HTMLFormElement>);
-            }
-          }}
-        />
+        {showEmojiPicker ? (
+          <EmojisDrawer />
+        ) : (
+          <TextField
+            fullWidth
+            multiline
+            minRows={2}
+            maxRows={2}
+            type="text"
+            value={inputText}
+            onChange={handleInputChange}
+            onKeyDown={(e: KeyboardEvent) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                handleFormSubmit(e as unknown as FormEvent<HTMLFormElement>);
+              }
+            }}
+          />
+        )}
         <Button
           disabled={inputText === ""}
           variant="contained"

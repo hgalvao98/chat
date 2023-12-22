@@ -1,9 +1,29 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Message } from "../../types";
 import { Box, Button, TextField, Typography } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 function Welcome() {
   const [name, setName] = useState("");
+  const [emojiData, setEmojiData] = useState([]);
+
+  const getEmojis = async () => {
+    try {
+      const response = await axios.get(
+        `https://emoji-api.com/emojis?access_key=${process.env.REACT_APP_EMOJI_API_KEY}`
+      );
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["Emoji"],
+    queryFn: getEmojis,
+    refetchOnWindowFocus: false,
+  });
 
   const handleJoinChat = () => {
     const storedMessages = localStorage.getItem("chatMessages");
@@ -17,6 +37,12 @@ function Welcome() {
       alert("Nome de usuário já em uso");
     }
   };
+
+  useEffect(() => {
+    if (data) {
+      setEmojiData(data);
+    }
+  }, [data]);
 
   return (
     <Box
@@ -49,7 +75,12 @@ function Welcome() {
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
-        <Button variant="contained" type="button" onClick={handleJoinChat}>
+        <Button
+          disabled={isLoading}
+          variant="contained"
+          type="button"
+          onClick={handleJoinChat}
+        >
           Entrar
         </Button>
       </Box>

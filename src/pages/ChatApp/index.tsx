@@ -8,7 +8,6 @@ const ChatApp = () => {
   const params = useParams();
 
   const userId = params.name;
-  const [messages, setMessages] = useState<Message[]>([]);
   const [messagesFromServer, setMessagesFromServer] = useState<Message[]>([]);
   const [inputText, setInputText] = useState("");
 
@@ -27,7 +26,7 @@ const ChatApp = () => {
     }
 
     const handleBeforeUnload = () => {
-      const serializedMessages = JSON.stringify(messages);
+      const serializedMessages = JSON.stringify(messagesFromServer);
       localStorage.setItem("chatMessages", serializedMessages);
     };
 
@@ -36,7 +35,7 @@ const ChatApp = () => {
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
-  }, [messages]);
+  }, [messagesFromServer]);
 
   useEffect(() => {
     window.addEventListener("storage", handleStorage);
@@ -49,7 +48,7 @@ const ChatApp = () => {
   useEffect(() => {
     const storedMessages = localStorage.getItem("chatMessages");
     if (storedMessages) {
-      setMessages(JSON.parse(storedMessages));
+      setMessagesFromServer(JSON.parse(storedMessages));
     }
 
     const handleStorage = (e: StorageEvent) => {
@@ -70,10 +69,6 @@ const ChatApp = () => {
     };
   }, []);
 
-  useEffect(() => {
-    setMessages(messagesFromServer);
-  }, [messagesFromServer]);
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputText(e.target.value);
   };
@@ -87,12 +82,11 @@ const ChatApp = () => {
       id: uuidv4(),
     };
 
-    const updatedMessages = [...messages, newMessage];
+    const updatedMessages = [...messagesFromServer, newMessage];
     updatedMessages.sort((a, b) =>
       a.creationDate.localeCompare(b.creationDate)
     );
 
-    setMessages(updatedMessages);
     setMessagesFromServer(updatedMessages);
 
     const serializedMessages = JSON.stringify(updatedMessages);

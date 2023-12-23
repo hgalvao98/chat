@@ -1,18 +1,9 @@
-import {
-  FormEvent,
-  KeyboardEvent,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { FormEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { EmojiData, Message } from "../../types";
 import { Box, Button, IconButton, TextField, Typography } from "@mui/material";
 import { ArrowBack, Delete, InsertEmoticon } from "@mui/icons-material";
-import EmojiPicker from "@emoji-mart/react";
-import data from "@emoji-mart/data";
 import EmojisDrawer from "../../components/EmojisDrawer";
 
 const ChatApp = () => {

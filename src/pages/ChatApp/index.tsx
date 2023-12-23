@@ -3,17 +3,27 @@ import { useNavigate, useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { EmojiData, Message } from "../../types";
 import { Box, Button, IconButton, TextField, Typography } from "@mui/material";
-import { ArrowBack, Delete, InsertEmoticon } from "@mui/icons-material";
+import {
+  ArrowBack,
+  Delete,
+  InsertEmoticon,
+  Keyboard,
+} from "@mui/icons-material";
 import EmojisDrawer from "../../components/EmojisDrawer";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store/emojisSlice";
 
 const ChatApp = () => {
   const params = useParams();
   const navigate = useNavigate();
 
   const userId = params.name;
+
   const [messagesFromServer, setMessagesFromServer] = useState<Message[]>([]);
   const [inputText, setInputText] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+
+  const emojis = useSelector((state: RootState) => state.emojis);
 
   const handleStorage = (e: StorageEvent) => {
     if (e.key === "chatMessages") {
@@ -29,6 +39,7 @@ const ChatApp = () => {
       setMessagesFromServer(JSON.parse(storedMessages));
     }
 
+    //save messages before closing tab
     const handleBeforeUnload = () => {
       const serializedMessages = JSON.stringify(messagesFromServer);
       localStorage.setItem("chatMessages", serializedMessages);
@@ -41,31 +52,8 @@ const ChatApp = () => {
     };
   }, [messagesFromServer]);
 
+  //listen to changes in local storage
   useEffect(() => {
-    window.addEventListener("storage", handleStorage);
-
-    return () => {
-      window.removeEventListener("storage", handleStorage);
-    };
-  }, []);
-
-  useEffect(() => {
-    const storedMessages = localStorage.getItem("chatMessages");
-    if (storedMessages) {
-      setMessagesFromServer(JSON.parse(storedMessages));
-    }
-
-    const handleStorage = (e: StorageEvent) => {
-      if (e.key === "chatMessages") {
-        const newMessages = JSON.parse(e.newValue as string);
-        newMessages.sort(
-          (a: { creationDate: string }, b: { creationDate: any }) =>
-            a.creationDate.localeCompare(b.creationDate)
-        );
-        setMessagesFromServer(newMessages);
-      }
-    };
-
     window.addEventListener("storage", handleStorage);
 
     return () => {
@@ -195,57 +183,19 @@ const ChatApp = () => {
         display="flex"
         gap={2}
       >
-        {showEmojiPicker ? (
-          <EmojisDrawer
-            data={[
-              {
-                slug: "grinning-face",
-                character: "\ud83d\ude00",
-                unicodeName: "grinning face",
-                codePoint: "1F600",
-                group: "smileys-emotion",
-                subGroup: "face-smiling",
-              },
-              {
-                slug: "grinning-face-with-big-eyes",
-                character: "\ud83d\ude03",
-                unicodeName: "grinning face with big eyes",
-                codePoint: "1F603",
-                group: "smileys-emotion",
-                subGroup: "face-smiling",
-              },
-              {
-                slug: "grinning-face-with-smiling-eyes",
-                character: "\ud83d\ude04",
-                unicodeName: "grinning face with smiling eyes",
-                codePoint: "1F604",
-                group: "smileys-emotion",
-                subGroup: "face-smiling",
-              },
-              {
-                slug: "beaming-face-with-smiling-eyes",
-                character: "\ud83d\ude01",
-                unicodeName: "beaming face with smiling eyes",
-                codePoint: "1F601",
-                group: "smileys-emotion",
-                subGroup: "face-smiling",
-              },
-              {
-                slug: "grinning-squinting-face",
-                character: "\ud83d\ude06",
-                unicodeName: "grinning squinting face",
-                codePoint: "1F606",
-                group: "smileys-emotion",
-                subGroup: "face-smiling",
-              },
-            ]}
-            onSelect={handleEmojiSelect}
-          />
-        ) : (
+        <Box
+          width="100%"
+          overflow="hidden"
+          display="flex"
+          flexDirection={showEmojiPicker ? "column-reverse" : "column"}
+        >
+          {showEmojiPicker && (
+            <EmojisDrawer data={emojis} onSelect={handleEmojiSelect} />
+          )}
           <TextField
             fullWidth
             multiline
-            minRows={2}
+            minRows={showEmojiPicker ? 1 : 2}
             maxRows={2}
             type="text"
             value={inputText}
@@ -256,18 +206,19 @@ const ChatApp = () => {
                 handleFormSubmit(e as unknown as FormEvent<HTMLFormElement>);
               }
             }}
+            sx={{ bgcolor: "white" }}
           />
-        )}
+        </Box>
         <Button
           disabled={inputText === ""}
           variant="contained"
           type="submit"
-          sx={{ height: "79px" }}
+          sx={{ height: "100%" }}
         >
           Enviar
         </Button>
         <IconButton onClick={() => setShowEmojiPicker(!showEmojiPicker)}>
-          {showEmojiPicker ? <ArrowBack /> : <InsertEmoticon />}
+          {showEmojiPicker ? <Keyboard /> : <InsertEmoticon />}
         </IconButton>
       </Box>
     </Box>

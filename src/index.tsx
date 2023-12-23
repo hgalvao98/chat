@@ -3,6 +3,8 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import CssBaseline from "@mui/material/CssBaseline";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Provider } from "react-redux";
+import store from "./store/emojisSlice";
 
 const queryClient = new QueryClient();
 
@@ -13,7 +15,9 @@ root.render(
   <React.StrictMode>
     <CssBaseline />
     <QueryClientProvider client={queryClient}>
-      <App />
+      <Provider store={store}>
+        <App />
+      </Provider>
     </QueryClientProvider>
   </React.StrictMode>
 );

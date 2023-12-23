@@ -4,7 +4,13 @@ import { EmojisDrawerProps } from "../../types";
 
 function EmojisDrawer({ data, onSelect }: EmojisDrawerProps) {
   return (
-    <Box width="100%" height="79px" display="flex" alignItems="center">
+    <Box
+      width="100%"
+      overflow="auto"
+      height="50px"
+      display="flex"
+      alignItems="center"
+    >
       {data.map((emoji) => (
         <Box key={emoji.unicodeName} onClick={() => onSelect(emoji)}>
           {emoji.character}

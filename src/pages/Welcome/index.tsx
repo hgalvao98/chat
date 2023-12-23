@@ -3,10 +3,15 @@ import { Message } from "../../types";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { setEmojisData } from "../../store/emojisSlice";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 function Welcome() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const [name, setName] = useState("");
-  const [emojis, setEmojis] = useState<any[]>([]);
 
   const getEmojis = async () => {
     try {
@@ -32,7 +37,7 @@ function Welcome() {
       (message: Message) => message.userId === name
     );
     if (name && !nameInUse) {
-      window.location.href = `/chat/${name}`;
+      navigate(`/chat/${name}`);
     } else {
       alert("Nome de usuário já em uso");
     }
@@ -40,7 +45,7 @@ function Welcome() {
 
   useEffect(() => {
     if (data) {
-      setEmojis(data.slice(0, 20));
+      dispatch(setEmojisData(data.slice(0, 100)));
     }
   }, [data]);
 
@@ -76,7 +81,7 @@ function Welcome() {
           onChange={(e) => setName(e.target.value)}
         />
         <Button
-          disabled={isLoading}
+          disabled={isLoading || !name}
           variant="contained"
           type="button"
           onClick={handleJoinChat}

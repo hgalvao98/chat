@@ -1,17 +1,11 @@
-import { FormEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
-import { EmojiData, Message } from "../../types";
-import { Box, Button, IconButton, TextField, Typography } from "@mui/material";
-import {
-  ArrowBack,
-  Delete,
-  InsertEmoticon,
-  Keyboard,
-} from "@mui/icons-material";
-import EmojisDrawer from "../../components/EmojisDrawer";
-import { useSelector } from "react-redux";
-import { RootState } from "../../store/emojisSlice";
+import { Message } from "../../types";
+import { Box, Button, IconButton, Typography } from "@mui/material";
+import { ArrowBack, Delete } from "@mui/icons-material";
+
+import Input from "./components/Input";
 
 const ChatApp = () => {
   const params = useParams();
@@ -21,9 +15,6 @@ const ChatApp = () => {
 
   const [messagesFromServer, setMessagesFromServer] = useState<Message[]>([]);
   const [inputText, setInputText] = useState("");
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-
-  const emojis = useSelector((state: RootState) => state.emojis);
 
   const handleStorage = (e: StorageEvent) => {
     if (e.key === "chatMessages") {
@@ -102,10 +93,6 @@ const ChatApp = () => {
     }
   };
 
-  const handleEmojiSelect = (emoji: EmojiData) => {
-    setInputText((prevText) => prevText + emoji.character);
-  };
-
   return (
     <Box
       height="100vh"
@@ -176,51 +163,12 @@ const ChatApp = () => {
           </Box>
         ))}
       </Box>
-      <Box
-        width="100%"
-        component={"form"}
-        onSubmit={handleFormSubmit}
-        display="flex"
-        gap={2}
-      >
-        <Box
-          width="100%"
-          overflow="hidden"
-          display="flex"
-          flexDirection={showEmojiPicker ? "column-reverse" : "column"}
-        >
-          {showEmojiPicker && (
-            <EmojisDrawer data={emojis} onSelect={handleEmojiSelect} />
-          )}
-          <TextField
-            fullWidth
-            multiline
-            minRows={showEmojiPicker ? 1 : 2}
-            maxRows={2}
-            type="text"
-            value={inputText}
-            onChange={handleInputChange}
-            onKeyDown={(e: KeyboardEvent) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                handleFormSubmit(e as unknown as FormEvent<HTMLFormElement>);
-              }
-            }}
-            sx={{ bgcolor: "white" }}
-          />
-        </Box>
-        <Button
-          disabled={inputText === ""}
-          variant="contained"
-          type="submit"
-          sx={{ height: "100%" }}
-        >
-          Enviar
-        </Button>
-        <IconButton onClick={() => setShowEmojiPicker(!showEmojiPicker)}>
-          {showEmojiPicker ? <Keyboard /> : <InsertEmoticon />}
-        </IconButton>
-      </Box>
+      <Input
+        handleFormSubmit={handleFormSubmit}
+        handleInputChange={handleInputChange}
+        inputText={inputText}
+        setInputText={setInputText}
+      />
     </Box>
   );
 };

@@ -6,7 +6,7 @@ import axios from "axios";
 
 function Welcome() {
   const [name, setName] = useState("");
-  const [emojiData, setEmojiData] = useState([]);
+  const [emojis, setEmojis] = useState<any[]>([]);
 
   const getEmojis = async () => {
     try {
@@ -40,7 +40,7 @@ function Welcome() {
 
   useEffect(() => {
     if (data) {
-      setEmojiData(data);
+      setEmojis(data.slice(0, 20));
     }
   }, [data]);
 

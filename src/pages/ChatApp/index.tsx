@@ -1,9 +1,18 @@
-import { FormEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
+import {
+  FormEvent,
+  KeyboardEvent,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
-import { Message } from "../../types";
+import { EmojiData, Message } from "../../types";
 import { Box, Button, IconButton, TextField, Typography } from "@mui/material";
-import { ArrowBack, Delete } from "@mui/icons-material";
+import { ArrowBack, Delete, InsertEmoticon } from "@mui/icons-material";
+import EmojiPicker from "@emoji-mart/react";
+import data from "@emoji-mart/data";
 import EmojisDrawer from "../../components/EmojisDrawer";
 
 const ChatApp = () => {
@@ -114,6 +123,10 @@ const ChatApp = () => {
     }
   };
 
+  const handleEmojiSelect = (emoji: EmojiData) => {
+    setInputText((prevText) => prevText + emoji.character);
+  };
+
   return (
     <Box
       height="100vh"
@@ -192,7 +205,51 @@ const ChatApp = () => {
         gap={2}
       >
         {showEmojiPicker ? (
-          <EmojisDrawer />
+          <EmojisDrawer
+            data={[
+              {
+                slug: "grinning-face",
+                character: "\ud83d\ude00",
+                unicodeName: "grinning face",
+                codePoint: "1F600",
+                group: "smileys-emotion",
+                subGroup: "face-smiling",
+              },
+              {
+                slug: "grinning-face-with-big-eyes",
+                character: "\ud83d\ude03",
+                unicodeName: "grinning face with big eyes",
+                codePoint: "1F603",
+                group: "smileys-emotion",
+                subGroup: "face-smiling",
+              },
+              {
+                slug: "grinning-face-with-smiling-eyes",
+                character: "\ud83d\ude04",
+                unicodeName: "grinning face with smiling eyes",
+                codePoint: "1F604",
+                group: "smileys-emotion",
+                subGroup: "face-smiling",
+              },
+              {
+                slug: "beaming-face-with-smiling-eyes",
+                character: "\ud83d\ude01",
+                unicodeName: "beaming face with smiling eyes",
+                codePoint: "1F601",
+                group: "smileys-emotion",
+                subGroup: "face-smiling",
+              },
+              {
+                slug: "grinning-squinting-face",
+                character: "\ud83d\ude06",
+                unicodeName: "grinning squinting face",
+                codePoint: "1F606",
+                group: "smileys-emotion",
+                subGroup: "face-smiling",
+              },
+            ]}
+            onSelect={handleEmojiSelect}
+          />
         ) : (
           <TextField
             fullWidth
@@ -218,6 +275,9 @@ const ChatApp = () => {
         >
           Enviar
         </Button>
+        <IconButton onClick={() => setShowEmojiPicker(!showEmojiPicker)}>
+          {showEmojiPicker ? <ArrowBack /> : <InsertEmoticon />}
+        </IconButton>
       </Box>
     </Box>
   );

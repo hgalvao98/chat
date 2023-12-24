@@ -1,15 +1,14 @@
 import { ArrowBack, Delete } from "@mui/icons-material";
 import { Box, Button, IconButton, Typography } from "@mui/material";
-import React from "react";
 import { useNavigate } from "react-router-dom";
+import { Message } from "../../../../types";
 
 type ChatHeaderProps = {
-  setMessagesFromServer: ([]) => void;
+  setMessagesFromServer: (array: Message[]) => void;
 };
 
 function ChatHeader({ setMessagesFromServer }: ChatHeaderProps) {
   const navigate = useNavigate();
-
   return (
     <Box display="flex" padding={2} justifyContent="space-between" width="100%">
       <IconButton

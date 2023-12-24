@@ -141,6 +141,10 @@ const ChatApp = () => {
         overflow="auto"
         bgcolor="white"
         id="chat-container"
+        display="flex"
+        flexDirection="column"
+        justifyContent="space-between"
+        gap={1}
         p={2}
       >
         {messagesFromServer.map((message) => (
@@ -149,6 +153,7 @@ const ChatApp = () => {
             flexDirection="column"
             alignItems={message.userId === userId ? "flex-end" : "flex-start"}
             key={message.id}
+            width="100%"
           >
             <Typography fontWeight="bold">
               {message.userId as string}:
@@ -157,6 +162,10 @@ const ChatApp = () => {
               bgcolor={message.userId === userId ? "lightblue" : "lightgray"}
               borderRadius={1}
               padding={1}
+              maxWidth="50%"
+              height="100%"
+              overflow="hidden"
+              sx={{ wordWrap: "break-word" }}
             >
               {message.text}
             </Typography>

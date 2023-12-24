@@ -1,15 +1,15 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { Message } from "../../types";
-import { Box, Button, IconButton, Typography } from "@mui/material";
-import { ArrowBack, Delete } from "@mui/icons-material";
+import { Box } from "@mui/material";
 
 import Input from "./components/Input";
+import ChatHeader from "./components/ChatHeader";
+import ChatContainer from "./components/ChatContainer";
 
 const ChatApp = () => {
   const params = useParams();
-  const navigate = useNavigate();
 
   const userId = params.name;
 
@@ -22,7 +22,7 @@ const ChatApp = () => {
     }
   };
 
-  const prevLengthRef = useRef(messagesFromServer.length);
+  const prevLengthRef = useRef(messagesFromServer?.length);
 
   useEffect(() => {
     const storedMessages = localStorage.getItem("chatMessages");
@@ -79,11 +79,11 @@ const ChatApp = () => {
   };
 
   useEffect(() => {
-    if (messagesFromServer.length > prevLengthRef.current) {
+    if (messagesFromServer?.length > prevLengthRef.current) {
       scrollToBottom();
     }
 
-    prevLengthRef.current = messagesFromServer.length;
+    prevLengthRef.current = messagesFromServer?.length;
   }, [messagesFromServer]);
 
   const scrollToBottom = () => {
@@ -107,31 +107,7 @@ const ChatApp = () => {
       bgcolor="#f5f7f8"
       padding={2}
     >
-      <Box
-        display="flex"
-        padding={2}
-        justifyContent="space-between"
-        width="100%"
-      >
-        <IconButton
-          onClick={() => {
-            navigate(-1);
-          }}
-        >
-          <ArrowBack color="primary" />
-        </IconButton>
-        <Typography variant="h4">Chat</Typography>
-        <Button
-          variant="outlined"
-          onClick={() => {
-            localStorage.removeItem("chatMessages");
-            setMessagesFromServer([]);
-          }}
-        >
-          Limpar
-          <Delete />
-        </Button>
-      </Box>
+      <ChatHeader setMessagesFromServer={setMessagesFromServer} />
       <Box
         height="80%"
         border="1px solid"
@@ -143,34 +119,13 @@ const ChatApp = () => {
         id="chat-container"
         display="flex"
         flexDirection="column"
-        justifyContent="space-between"
         gap={1}
         p={2}
       >
-        {messagesFromServer.map((message) => (
-          <Box
-            display="flex"
-            flexDirection="column"
-            alignItems={message.userId === userId ? "flex-end" : "flex-start"}
-            key={message.id}
-            width="100%"
-          >
-            <Typography fontWeight="bold">
-              {message.userId as string}:
-            </Typography>{" "}
-            <Typography
-              bgcolor={message.userId === userId ? "lightblue" : "lightgray"}
-              borderRadius={1}
-              padding={1}
-              maxWidth="50%"
-              height="100%"
-              overflow="hidden"
-              sx={{ wordWrap: "break-word" }}
-            >
-              {message.text}
-            </Typography>
-          </Box>
-        ))}
+        {messagesFromServer &&
+          messagesFromServer.map((message) => (
+            <ChatContainer key={message.id} message={message} />
+          ))}
       </Box>
       <Input
         handleFormSubmit={handleFormSubmit}

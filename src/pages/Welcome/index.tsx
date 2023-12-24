@@ -20,7 +20,7 @@ function Welcome() {
       );
       return response.data;
     } catch (error) {
-      console.log(error);
+      alert(error);
     }
   };
 

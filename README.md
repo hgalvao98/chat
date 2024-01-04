@@ -10,7 +10,7 @@ This repository contains the source code for the Gobots Chat App, a React applic
 ### Steps
 1. Clone the repository:
     ```bash
-    git clone https://github.com/your-username/gobots-chat.git
+    git clone https://github.com/hgalvao98/gobots-chat.git
     cd gobots-chat
     ```
 
